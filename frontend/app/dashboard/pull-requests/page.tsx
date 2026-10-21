@@ -7,7 +7,7 @@ import { AiStatusBadge, Empty, ErrorBox, PageHead, Panel, PanelHead, RecordedNot
 function DiffView({ diff }: { diff: string }) {
   if (!diff) return <p className="text-sm text-secondary">No textual diff returned.</p>;
   return (
-    <pre className="scroll-slim max-h-[440px] overflow-auto rounded-2xl border border-border bg-canvas p-4 font-mono text-xs leading-[1.7]">
+    <pre className="scroll-slim max-h-[440px] overflow-auto rounded-lg border border-border bg-canvas p-4 font-mono text-xs leading-[1.7]">
       {diff.split("\n").map((ln, i) => (
         <div
           key={i}
@@ -70,7 +70,7 @@ export default function PRs() {
             value={rid}
             onChange={(e) => setRid(e.target.value)}
             aria-label="Repository"
-            className="rounded-2xl border border-border bg-surface px-3 py-2 font-mono text-[13px] transition duration-160 hover:border-muted focus:border-accent"
+            className="rounded-lg border border-border bg-surface px-3 py-2 font-mono text-[13px] transition duration-160 hover:border-muted focus:border-accent"
           >
             {repos.map((r) => <option key={r.id} value={r.id}>{r.full_name}</option>)}
           </select>
@@ -128,7 +128,7 @@ export default function PRs() {
                 ) : (
                   <div className="mt-3 space-y-3">
                     {review.findings.map((f: any, i: number) => (
-                      <article key={i} className="rounded-2xl border border-border bg-canvas p-4">
+                      <article key={i} className="rounded-lg border border-border bg-canvas p-4">
                         <div className="flex flex-wrap items-center gap-2">
                           <SevBadge severity={f.severity} />
                           <span className="text-xs capitalize text-muted">{f.category}</span>

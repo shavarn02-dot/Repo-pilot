@@ -70,10 +70,10 @@ export default function Reports() {
       <div className="mt-7">
         {loading ? (
           <div className="space-y-3" role="status" aria-label="Loading reports">
-            {[0, 1, 2].map((i) => <div key={i} className="skeleton-pulse h-[76px] rounded-[24px] bg-elevated" style={{ animationDelay: `${i * 120}ms` }} />)}
+            {[0, 1, 2].map((i) => <div key={i} className="skeleton-pulse h-[76px] rounded-xl bg-elevated" style={{ animationDelay: `${i * 120}ms` }} />)}
           </div>
         ) : offline ? (
-          <div className="overflow-x-auto rounded-[24px] border border-border bg-surface">
+          <div className="overflow-x-auto rounded-xl border border-border bg-surface">
             <table className="w-full min-w-[680px] text-left text-sm">
               <thead>
                 <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
@@ -99,7 +99,7 @@ export default function Reports() {
                     <td className="px-4 py-3.5 text-right">
                       <button
                         onClick={() => downloadRecorded(c)}
-                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-1.5 text-[13px] transition duration-300 ease-spring hover:bg-elevated"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-[13px] transition duration-160 hover:bg-hover"
                       >
                         <Download size={13} /> JSON
                       </button>
@@ -116,7 +116,7 @@ export default function Reports() {
             {repos.map((r) => {
               const rep = reports[r.id];
               return (
-                <div key={r.id} className="flex flex-wrap items-center gap-4 rounded-[24px] border border-border bg-surface px-5 py-4 transition duration-160 hover:bg-hover">
+                <div key={r.id} className="flex flex-wrap items-center gap-4 rounded-xl border border-border bg-surface px-5 py-4 transition duration-160 hover:bg-hover">
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-mono text-[13px]">{r.full_name}</p>
                     <p className="mt-1 text-[13px] text-secondary">
@@ -132,10 +132,10 @@ export default function Reports() {
                         <span className="ml-1 text-xs font-normal text-muted">/ 100</span>
                       </span>
                       <div className="flex gap-2">
-                        <Link href={`/dashboard/repositories/${r.id}`} className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-[13px] transition duration-300 ease-spring hover:bg-elevated">
+                        <Link href={`/dashboard/repositories/${r.id}`} className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[13px] transition duration-160 hover:bg-hover">
                           Open <ArrowUpRight size={13} />
                         </Link>
-                        <button onClick={() => download(r, rep)} className="flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-[13px] transition duration-300 ease-spring hover:bg-elevated">
+                        <button onClick={() => download(r, rep)} className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-[13px] transition duration-160 hover:bg-hover">
                           <Download size={13} /> Export JSON
                         </button>
                       </div>

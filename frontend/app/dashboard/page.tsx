@@ -66,7 +66,7 @@ export default function Overview() {
 
       <form
         onSubmit={analyze}
-        className="mt-7 flex flex-col gap-2 rounded-[24px] border border-border bg-surface p-3.5 sm:flex-row"
+        className="mt-7 flex flex-col gap-2 rounded-xl border border-border bg-surface p-3.5 sm:flex-row"
       >
         <label className="sr-only" htmlFor="ov-url">GitHub repository URL</label>
         <input
@@ -74,13 +74,13 @@ export default function Overview() {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://github.com/owner/repo"
-          className="min-w-0 flex-1 rounded-2xl border border-border bg-canvas px-3.5 py-2.5 font-mono text-sm transition duration-160 placeholder:text-muted hover:border-muted focus:border-accent"
+          className="min-w-0 flex-1 rounded-lg border border-border bg-canvas px-3.5 py-2.5 font-mono text-sm transition duration-160 placeholder:text-muted hover:border-muted focus:border-accent"
           autoComplete="off"
           spellCheck={false}
         />
         <button
           disabled={busy || !url.trim()}
-          className="flex shrink-0 items-center justify-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-onAccent transition duration-160 hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex shrink-0 items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-black transition duration-160 hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
         >
           {busy ? "Analysing…" : (<>Analyse <ArrowRight size={15} /></>)}
         </button>
@@ -106,7 +106,7 @@ export default function Overview() {
         ) : offline ? (
           <div className="space-y-4">
             <RecordedNote label="Backend is offline, so this table shows 4 real analyses captured 2026-10-21 from the RepoPilot backend against the real GitHub API" />
-            <div className="overflow-x-auto rounded-[24px] border border-border bg-surface">
+            <div className="overflow-x-auto rounded-xl border border-border bg-surface">
               <table className="w-full min-w-[680px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
@@ -148,7 +148,7 @@ export default function Overview() {
             body="Paste a public GitHub URL above. Your first health report — score, category breakdown and evidence-linked findings — will appear here."
           />
         ) : (
-          <div className="overflow-x-auto rounded-[24px] border border-border bg-surface">
+          <div className="overflow-x-auto rounded-xl border border-border bg-surface">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
                 <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
@@ -179,7 +179,7 @@ export default function Overview() {
                       <Link
                         href={`/dashboard/repositories/${r.id}`}
                         aria-label={`Open ${r.full_name}`}
-                        className="inline-flex rounded-2xl border border-border p-1.5 text-secondary transition duration-160 hover:bg-hover hover:text-primary"
+                        className="inline-flex rounded-lg border border-border p-1.5 text-secondary transition duration-160 hover:bg-hover hover:text-primary"
                       >
                         <ArrowUpRight size={15} />
                       </Link>

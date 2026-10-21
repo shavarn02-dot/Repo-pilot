@@ -1,75 +1,60 @@
 "use client";
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import {
-  GitBranch, ShieldCheck, ScanEye, ArrowRight, ArrowUpRight,
-  FileSearch, GitPullRequest, CircleDot, CheckCircle2,
-} from "lucide-react";
-import { api } from "@/lib/api";
-import { SNAPSHOT, CATEGORIES, SNAPSHOT_LABEL } from "@/lib/snapshot";
-import { ScoreRing, SevBadge, ScoreBar, ThemeToggle } from "@/components/ui";
 
-function ProductPreview() {
+import React, { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ArrowRight, ArrowUpRight, Check, FileCode2, GitBranch, GitPullRequest, ScanSearch, ShieldCheck } from "lucide-react";
+import { api } from "@/lib/api";
+import { CATEGORIES, SNAPSHOT } from "@/lib/snapshot";
+import { ScoreBar, SevBadge, scoreTextClass } from "@/components/ui";
+
+function Mark() {
+  return (
+    <span className="flex h-8 w-8 items-center justify-center rounded-md border border-primary bg-primary text-surface">
+      <GitBranch size={17} strokeWidth={2.2} />
+    </span>
+  );
+}
+
+function AnalysisPreview() {
   const s = SNAPSHOT;
   return (
-    <div className="rounded-hero bg-surface p-3 shadow-float sm:p-4">
-      <div className="overflow-hidden rounded-card bg-canvas">
-        {/* window chrome */}
-        <div className="flex items-center justify-between gap-3 px-5 py-3.5">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <span className="flex gap-1.5" aria-hidden>
-              <span className="h-2.5 w-2.5 rounded-full bg-elevated" />
-              <span className="h-2.5 w-2.5 rounded-full bg-elevated" />
-              <span className="h-2.5 w-2.5 rounded-full bg-elevated" />
-            </span>
-            <span className="truncate font-mono text-[13px] font-medium">{s.repo.full_name}</span>
-            <span className="hidden font-mono text-[11px] text-muted sm:inline">
-              {s.repo.default_branch} · {s.repo.commit_sha.slice(0, 7)}
-            </span>
-          </div>
-          <span className="shrink-0 rounded-full bg-warning/10 px-3 py-1 text-[11px] font-semibold text-warning">
-            Recorded live analysis
-          </span>
+    <div className="border border-border bg-surface shadow-[6px_6px_0_#d5d0c5]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-3">
+        <div>
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">Analysis #0241</p>
+          <p className="mt-1 font-mono text-sm font-medium">{s.repo.full_name}</p>
         </div>
+        <span className="font-mono text-[11px] text-secondary">{s.repo.default_branch}@{s.repo.commit_sha.slice(0, 7)}</span>
+      </div>
 
-        <div className="grid sm:grid-cols-[190px_1fr]">
-          {/* score ring rail */}
-          <div className="flex flex-col items-center px-5 py-5">
-            <ScoreRing score={s.health_score} scores={s.scores} size={150} />
-            <p className="mt-3 text-center text-xs leading-relaxed text-muted">
-              Scoring v{s.scoring_version} · deterministic
-              <br />
-              <span className="tnum font-mono text-[11px]">{s.repo.files_in_tree} files analysed · 1 finding</span>
-            </p>
-          </div>
-          {/* categories + finding */}
-          <div className="px-5 py-5 sm:pl-1">
-            <div className="space-y-2.5">
-              {CATEGORIES.map(([k, label, wt]) => (
-                <div key={k} className="grid grid-cols-[128px_1fr] items-center gap-3">
-                  <span className="truncate text-[13px] text-secondary">
-                    {label} <span className="tnum font-mono text-[11px] text-muted">{wt}%</span>
-                  </span>
-                  <ScoreBar value={s.scores[k]} label={label} />
-                </div>
-              ))}
-            </div>
-            <div className="mt-5 rounded-[20px] bg-surface px-4 py-3.5">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <SevBadge severity={s.findings[0].severity} />
-                <p className="text-sm font-semibold">{s.findings[0].title}</p>
-                <span className="font-mono text-xs text-muted">{s.findings[0].file_path}</span>
-              </div>
-              <p className="mt-1.5 text-[13px] leading-relaxed text-secondary">
-                Evidence: {s.findings[0].evidence}. Fix: {s.findings[0].suggested_fix}
-              </p>
-            </div>
+      <div className="grid md:grid-cols-[170px_1fr]">
+        <div className="border-b border-border p-5 md:border-b-0 md:border-r">
+          <p className={`tnum font-mono text-5xl font-semibold leading-none ${scoreTextClass(s.health_score)}`}>{s.health_score.toFixed(1)}</p>
+          <p className="mt-2 text-xs leading-relaxed text-secondary">Repository health<br />out of 100</p>
+          <div className="mt-5 border-t border-border pt-4 font-mono text-[11px] leading-5 text-muted">
+            <p>{s.repo.files_in_tree} files checked</p>
+            <p>scoring v{s.scoring_version}</p>
           </div>
         </div>
-        <p className="bg-surface px-5 py-3 font-mono text-[11px] leading-relaxed text-muted">
-          {SNAPSHOT_LABEL}
-        </p>
+        <div className="min-w-0 p-5">
+          <div className="space-y-2.5">
+            {CATEGORIES.map(([key, label]) => (
+              <div key={key} className="grid grid-cols-[106px_minmax(0,1fr)] items-center gap-3 sm:grid-cols-[132px_minmax(0,1fr)]">
+                <span className="truncate text-xs text-secondary">{label}</span>
+                <ScoreBar value={s.scores[key]} label={label} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-border bg-canvas/60 px-4 py-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <SevBadge severity={s.findings[0].severity} />
+          <span className="text-sm font-medium">{s.findings[0].title}</span>
+          <span className="font-mono text-[11px] text-muted">{s.findings[0].file_path}</span>
+        </div>
       </div>
     </div>
   );
@@ -79,277 +64,112 @@ export default function Landing() {
   const [url, setUrl] = useState("https://github.com/encode/httpx");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const [stage, setStage] = useState("");
   const router = useRouter();
 
-  async function go(e: React.FormEvent) {
+  async function analyze(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setErr("");
-    setStage("Fetching repository metadata and file tree from GitHub…");
     try {
-      const d = await api("/api/repositories/analyze", {
+      const data = await api("/api/repositories/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url }),
       });
-      router.push(`/dashboard/repositories/${d.repository.id}`);
-    } catch (x: any) {
-      setErr(x.message || "Analysis failed.");
+      router.push(`/dashboard/repositories/${data.repository.id}`);
+    } catch (error: any) {
+      setErr(error.message || "Could not analyse this repository.");
       setBusy(false);
-      setStage("");
     }
   }
 
   return (
-    <main className="min-h-screen bg-canvas px-3 sm:px-5">
-      {/* floating pill nav */}
-      <header className="sticky top-3 z-40 mx-auto mt-3 max-w-7xl">
-        <div className="flex items-center justify-between gap-3 rounded-full bg-surface py-2 pl-5 pr-2 shadow-soft">
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-onAccent">
-              <GitBranch size={16} strokeWidth={2.4} />
-            </span>
-            <span className="text-[15px] font-semibold tracking-[-0.01em]">RepoPilot</span>
-          </div>
-          <nav className="hidden items-center gap-1 text-sm text-secondary md:flex" aria-label="Product">
-            <a href="#evidence" className="rounded-full px-3.5 py-2 transition duration-300 ease-spring hover:bg-elevated hover:text-primary">Evidence</a>
-            <a href="#workflow" className="rounded-full px-3.5 py-2 transition duration-300 ease-spring hover:bg-elevated hover:text-primary">Workflow</a>
-            <a href="#visual" className="rounded-full px-3.5 py-2 transition duration-300 ease-spring hover:bg-elevated hover:text-primary">Visual Debugger</a>
-            <a href="#opensource" className="rounded-full px-3.5 py-2 transition duration-300 ease-spring hover:bg-elevated hover:text-primary">Open Source</a>
+    <main className="min-h-screen overflow-x-hidden bg-canvas">
+      <header className="border-b border-border bg-surface">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
+          <Link href="/" className="flex items-center gap-2.5" aria-label="RepoPilot home"><Mark /><span className="text-[15px] font-semibold tracking-[-0.02em]">RepoPilot</span></Link>
+          <nav className="hidden items-center gap-6 text-[13px] text-secondary md:flex" aria-label="Main navigation">
+            <a href="#method" className="hover:text-primary">How it works</a>
+            <a href="#tools" className="hover:text-primary">Tools</a>
+            <span className="rounded-full border border-border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-muted">MIT · local-first</span>
           </nav>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Link
-              href="/dashboard"
-              className="rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-onAccent transition duration-300 ease-spring hover:bg-accentHover"
-            >
-              Launch App
-            </Link>
-          </div>
+          <Link href="/dashboard" className="inline-flex items-center gap-1.5 text-sm font-semibold underline decoration-border decoration-2 underline-offset-4 hover:decoration-accent">Open workspace <ArrowUpRight size={15} /></Link>
         </div>
       </header>
 
-      {/* hero — asymmetric editorial */}
-      <section className="mx-auto max-w-7xl px-2 pb-20 pt-14 lg:px-3 lg:pb-28 lg:pt-24">
-        <div className="grid items-start gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-          <div className="rise lg:pt-8">
-            <p className="inline-flex rounded-full bg-accentContainer px-4 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">
-              Mission control for your codebase
-            </p>
-            <h1 className="mt-6 text-[46px] font-semibold leading-[1.02] tracking-[-0.03em] sm:text-6xl lg:text-[72px]">
-              Your repository deserves a better copilot.
-            </h1>
-            <p className="mt-6 max-w-lg text-lg leading-relaxed text-secondary">
-              Understand your codebase. Review pull requests. Catch issues earlier.
-              Keep your open-source projects moving — with Gemma 4-powered engineering
-              intelligence, grounded in evidence from your real files.
-            </p>
-            <form onSubmit={go} className="mt-9">
-              <label htmlFor="repo-url" className="text-sm font-semibold">
-                Analyse a public repository
-              </label>
-              <div className="mt-3 flex max-w-xl items-center gap-2 rounded-full bg-surface p-2 shadow-soft transition-shadow duration-300 focus-within:shadow-float">
-                <input
-                  id="repo-url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
-                  className="min-w-0 flex-1 bg-transparent px-4 py-2.5 font-mono text-sm outline-none placeholder:text-muted"
-                  placeholder="https://github.com/owner/repo"
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-                <button
-                  disabled={busy || !url.trim()}
-                  className="flex shrink-0 items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-onAccent transition duration-300 ease-spring hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  {busy ? "Analysing…" : (<>Analyse <ArrowRight size={16} /></>)}
-                </button>
-              </div>
-              {busy && stage && (
-                <p className="mt-3 flex items-center gap-2 pl-2 text-sm text-secondary" role="status">
-                  <span className="stage-dot-active h-2 w-2 rounded-full bg-accent" aria-hidden />
-                  {stage}
-                </p>
-              )}
-              {err && (
-                <p role="alert" className="mt-3 max-w-xl pl-2 text-sm leading-relaxed text-danger">{err}</p>
-              )}
-              <p className="mt-4 max-w-xl pl-2 text-[13px] leading-relaxed text-muted">
-                Scores come from deterministic checks on the real file tree.
-                Gemma 4 explains and prioritises — it never sets the score, and any
-                finding it cannot ground in a real file is discarded.
-              </p>
-            </form>
-          </div>
-          <div className="rise" style={{ animationDelay: "90ms" }}>
-            <ProductPreview />
-            <div className="tnum mt-4 flex flex-wrap gap-x-8 gap-y-2 px-2 font-mono text-xs text-muted">
-              <span>4 repositories recorded · 2026-10-21</span>
-              <span>Scores range 37.8 – 95.5</span>
-              <span>0 findings fabricated</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* evidence — tonal band */}
-      <section id="evidence" className="mx-auto max-w-7xl pb-6">
-        <div className="grid gap-10 rounded-hero bg-surface px-6 py-14 sm:px-10 lg:grid-cols-[1fr_1.4fr] lg:px-12">
+      <section className="mx-auto max-w-7xl px-5 pb-16 pt-12 lg:px-8 lg:pb-24 lg:pt-20">
+        <div className="grid items-start gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
           <div>
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accentContainer text-accent">
-              <ShieldCheck size={20} />
-            </span>
-            <h2 className="mt-5 text-[30px] font-semibold leading-snug tracking-[-0.02em]">
-              Evidence first.
-              <br />
-              Every finding, a real file.
-            </h2>
-          </div>
-          <div className="space-y-5 text-[15px] leading-relaxed text-secondary">
-            <p>
-              Most AI review tools will happily cite a line that does not exist. RepoPilot
-              validates every AI-proposed finding against the repository&apos;s actual file
-              tree before it is shown. A path that is not in the tree is downgraded to
-              <span className="font-medium text-primary"> unverified</span> with capped confidence — never
-              dressed up as a verified fact.
-            </p>
-            <p>
-              The health score is computed by published, deterministic rules across six
-              categories — maintainability, security signals, testing readiness,
-              documentation, CI/CD readiness and structure. The same tree always produces
-              the same score, and the arithmetic is shown on every report.
-            </p>
-            <ul className="space-y-2.5 pt-1">
-              {[
-                "octocat/Hello-World scored 37.8 — no tests, no CI, no LICENSE, from its real 1-file tree",
-                "sindresorhus/slugify scored 81.5 — testing 64 and documentation 55 are its real weak points",
-                "encode/httpx scored 95.5 — its single finding is a missing SECURITY.md, verified at the root",
-              ].map((t) => (
-                <li key={t} className="flex gap-2.5">
-                  <CheckCircle2 size={16} className="mt-1 shrink-0 text-success" aria-hidden />
-                  <span className="font-mono text-[13px] leading-relaxed">{t}</span>
-                </li>
-              ))}
+            <div className="flex items-center gap-3 text-xs font-medium uppercase tracking-[0.16em] text-secondary"><span className="h-px w-7 bg-accent" /> Open-source repository diagnostics</div>
+            <h1 className="mt-6 max-w-[680px] text-[42px] font-semibold leading-[1.02] tracking-[-0.045em] sm:text-6xl lg:text-[66px]">Know what a repository needs before the next review.</h1>
+            <p className="mt-6 max-w-xl text-[17px] leading-7 text-secondary">RepoPilot checks the actual file tree, explains weak spots with Gemma 4, and keeps every claim tied to evidence you can inspect.</p>
+
+            <form onSubmit={analyze} className="mt-8 max-w-xl border border-border bg-surface p-3 shadow-[4px_4px_0_#d5d0c5]">
+              <label htmlFor="repo-url" className="mb-2 block px-1 text-xs font-semibold uppercase tracking-[0.1em] text-secondary">Public GitHub repository</label>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <input id="repo-url" value={url} onChange={(e) => setUrl(e.target.value)} className="min-w-0 flex-1 rounded-md border border-border bg-canvas px-3.5 py-3 font-mono text-[13px] placeholder:text-muted hover:border-muted focus:border-accent" placeholder="github.com/owner/repository" autoComplete="off" spellCheck={false} />
+                <button disabled={busy || !url.trim()} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-surface hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50">{busy ? "Checking…" : "Run analysis"} <ArrowRight size={16} /></button>
+              </div>
+              {err && <p role="alert" className="px-1 pt-2.5 text-sm text-danger">{err}</p>}
+            </form>
+
+            <ul className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs text-secondary">
+              {["Deterministic score", "Source-linked findings", "Read-only by default"].map((item) => <li key={item} className="flex items-center gap-1.5"><Check size={13} className="text-success" />{item}</li>)}
             </ul>
           </div>
+
+          <div className="lg:pt-2">
+            <AnalysisPreview />
+            <p className="mt-4 max-w-2xl font-mono text-[11px] leading-5 text-muted">Recorded sample · encode/httpx · score produced from deterministic checks; AI does not set or modify it.</p>
+          </div>
         </div>
       </section>
 
-      {/* workflow — numbered, not cards */}
-      <section id="workflow" className="mx-auto max-w-7xl px-2 py-20 lg:px-3">
-        <h2 className="text-[30px] font-semibold tracking-[-0.02em]">From URL to report</h2>
-        <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-3">
-          {[
-            ["01", "Submit", "Paste a public GitHub URL. RepoPilot fetches metadata, the full file tree and the analysed commit from the GitHub API."],
-            ["02", "Verify", "Deterministic checks score six categories. Gemma 4 then explains the report — its findings pass grounding validation before display."],
-            ["03", "Review", "Inspect findings with their evidence, review PR diffs read-only, triage issues, and debug screenshots in the Visual Debugger."],
-          ].map(([n, t, b]) => (
-            <div key={n}>
-              <span className="tnum flex h-11 w-11 items-center justify-center rounded-full bg-accentContainer font-mono text-sm font-semibold text-accent">{n}</span>
-              <h3 className="mt-4 text-lg font-semibold">{t}</h3>
-              <p className="mt-2 text-[15px] leading-relaxed text-secondary">{b}</p>
+      <section id="method" className="border-y border-border bg-surface">
+        <div className="mx-auto grid max-w-7xl lg:grid-cols-[0.7fr_1.3fr]">
+          <div className="border-b border-border px-5 py-14 lg:border-b-0 lg:border-r lg:px-8 lg:py-20">
+            <p className="font-mono text-xs text-accent">01 / METHOD</p>
+            <h2 className="mt-4 text-3xl font-semibold leading-tight tracking-[-0.03em]">AI explains.<br />Rules decide.</h2>
+          </div>
+          <div className="grid sm:grid-cols-3">
+            {[["Fetch", "Read repository metadata and its complete file tree at one commit."], ["Score", "Run published checks across security, testing, docs, CI and structure."], ["Explain", "Ask Gemma 4 to prioritise findings, then reject references that are not in the tree."]].map(([title, body], index) => (
+              <div key={title} className="border-b border-border p-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0 lg:p-8">
+                <span className="font-mono text-xs text-muted">0{index + 1}</span>
+                <h3 className="mt-8 text-lg font-semibold">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-secondary">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="tools" className="mx-auto max-w-7xl px-5 py-16 lg:px-8 lg:py-24">
+        <div className="flex flex-wrap items-end justify-between gap-5 border-b border-primary pb-5">
+          <div><p className="font-mono text-xs text-accent">02 / WORKSPACE</p><h2 className="mt-3 text-3xl font-semibold tracking-[-0.03em]">Built for the review loop</h2></div>
+          <p className="max-w-md text-sm leading-6 text-secondary">One workspace for repository health, pull requests, issues, code-grounded questions and screenshot debugging.</p>
+        </div>
+
+        <div className="divide-y divide-border">
+          {[[GitPullRequest, "Pull-request review", "Inspect real diffs and see severity-ranked findings without posting anything back to GitHub."], [ShieldCheck, "Repository health", "Compare six weighted categories and trace every deduction to a deterministic rule."], [ScanSearch, "Visual debugger", "Turn a screenshot into observed, inferred and code-verified findings—with those distinctions kept visible."], [FileCode2, "Repository assistant", "Ask questions against retrieved project files and get citations instead of confident guesses."]].map(([Icon, title, body]: any, index) => (
+            <div key={title} className="grid gap-4 py-6 sm:grid-cols-[52px_220px_1fr_auto] sm:items-center">
+              <span className="font-mono text-xs text-muted">{String(index + 1).padStart(2, "0")}</span>
+              <div className="flex items-center gap-3"><Icon size={18} className="text-accent" /><h3 className="font-semibold">{title}</h3></div>
+              <p className="max-w-2xl text-sm leading-6 text-secondary">{body}</p>
+              <ArrowRight size={16} className="hidden text-muted sm:block" />
             </div>
           ))}
         </div>
-      </section>
 
-      {/* visual debugger feature */}
-      <section id="visual" className="mx-auto max-w-7xl px-2 pb-20 lg:px-3">
-        <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-          <div className="rounded-hero bg-surface p-4 shadow-soft sm:p-5">
-            <div className="rounded-card bg-canvas p-5">
-              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">Visual PR review · recorded</p>
-              <p className="mt-3 font-mono text-[13px]">
-                PR #3771 — Fix `unquote` IndexError on empty string input
-              </p>
-              <pre className="scroll-slim mt-3 overflow-auto rounded-[20px] bg-surface p-4 font-mono text-xs leading-relaxed">
-                {SNAPSHOT.prReview.diff.split("\n").map((ln, i) => (
-                  <div key={i} className={ln.startsWith("+") ? "text-success" : ln.startsWith("-") ? "text-danger" : "text-secondary"}>
-                    {ln || " "}
-                  </div>
-                ))}
-              </pre>
-              <p className="mt-3 text-[13px] leading-relaxed text-secondary">
-                Real diff, captured 2026-10-21. One deterministic finding: code changed
-                without test changes, in <span className="font-mono text-xs">httpx/_utils.py</span>.
-              </p>
-            </div>
-          </div>
-          <div className="lg:pt-4">
-            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accentContainer text-accent">
-              <ScanEye size={20} />
-            </span>
-            <h2 className="mt-5 text-[30px] font-semibold leading-snug tracking-[-0.02em]">
-              See the bug, not just the log.
-            </h2>
-            <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-secondary">
-              The Visual Debugger takes a screenshot and a description, retrieves the
-              repository files that could explain what you see, and returns structured
-              findings — observed in the image, inferred as a cause, or verified in code,
-              each labelled as what it is.
-            </p>
-            <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-secondary">
-              Turning a finding into a GitHub issue is a separate, explicit step: a
-              full preview you can edit, and a publish button that stays disabled
-              until you confirm.
-            </p>
-            <Link
-              href="/dashboard/visual"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-accentContainer px-5 py-2.5 text-sm font-semibold text-accent transition duration-300 ease-spring hover:bg-accent hover:text-onAccent"
-            >
-              Open the Visual Debugger <ArrowUpRight size={16} />
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-16 grid gap-x-10 gap-y-10 sm:grid-cols-3">
-          {[
-            [GitPullRequest, "Pull-request review", "Real diffs, severity-classified findings, read-only by design. Nothing is posted to GitHub from the review workspace."],
-            [CircleDot, "Issue triage", "Open issues classified by type with suggested labels and complexity. Suggestions only — your tracker stays untouched."],
-            [FileSearch, "Repository assistant", "Questions answered from retrieved files, with citations. When the evidence is insufficient, it says so."],
-          ].map(([Icon, t, b]: any) => (
-            <div key={t}>
-              <span className="flex h-11 w-11 items-center justify-center rounded-full bg-accentContainer text-accent">
-                <Icon size={19} />
-              </span>
-              <h3 className="mt-4 font-semibold">{t}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-secondary">{b}</p>
-            </div>
-          ))}
+        <div className="mt-12 flex flex-col justify-between gap-6 bg-primary px-6 py-7 text-surface sm:flex-row sm:items-center lg:px-8">
+          <div><p className="font-mono text-[11px] uppercase tracking-[0.14em] text-surface/60">Runs locally · MIT licensed</p><p className="mt-2 text-xl font-semibold">Bring a repository. Keep the evidence.</p></div>
+          <Link href="/dashboard" className="inline-flex items-center justify-center gap-2 rounded-md bg-surface px-5 py-3 text-sm font-semibold text-primary hover:bg-accent hover:text-primary">Open RepoPilot <ArrowRight size={16} /></Link>
         </div>
       </section>
 
-      {/* final CTA — solid indigo panel */}
-      <section id="opensource" className="mx-auto max-w-7xl pb-20">
-        <div className="flex flex-wrap items-end justify-between gap-8 rounded-hero bg-accent px-7 py-12 text-onAccent sm:px-11">
-          <div className="max-w-xl">
-            <h2 className="text-[32px] font-semibold leading-tight tracking-[-0.02em]">
-              Open source. ₹0 to run.
-              <br />
-              <span className="opacity-80">Built to be read, not just used.</span>
-            </h2>
-            <p className="mt-4 text-[15px] leading-relaxed opacity-90">
-              Next.js and FastAPI, a deterministic scoring service, and Gemma 4 through
-              OpenRouter&apos;s free models. MIT licensed — the scoring rules, prompts and
-              validation logic are all in the repository.
-            </p>
-          </div>
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-semibold text-accent shadow-pop transition duration-300 ease-spring hover:scale-[1.02]"
-          >
-            Launch App <ArrowRight size={17} />
-          </Link>
-        </div>
-      </section>
-
-      <footer className="mx-auto max-w-7xl px-2 pb-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-full bg-surface px-6 py-4 text-[13px] text-muted">
-          <span className="flex items-center gap-2">
-            <GitBranch size={15} /> RepoPilot — open source, MIT
-          </span>
-          <span className="font-mono text-xs">Gemma 4 via OpenRouter · google/gemma-4-31b-it:free</span>
+      <footer className="border-t border-border bg-surface">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-5 py-6 text-xs text-muted lg:px-8">
+          <span className="flex items-center gap-2"><GitBranch size={14} /> RepoPilot · open source under MIT</span>
+          <span className="font-mono">Next.js + FastAPI · Gemma 4 via OpenRouter</span>
         </div>
       </footer>
     </main>
