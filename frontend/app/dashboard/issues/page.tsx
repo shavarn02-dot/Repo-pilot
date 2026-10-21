@@ -53,14 +53,14 @@ export default function Issues() {
                 value={rid}
                 onChange={(e) => setRid(e.target.value)}
                 aria-label="Repository"
-                className="rounded-lg border border-border bg-surface px-3 py-2 font-mono text-[13px] transition duration-160 hover:border-muted focus:border-accent"
+                className="rounded-2xl border border-border bg-surface px-3 py-2 font-mono text-[13px] transition duration-160 hover:border-muted focus:border-accent"
               >
                 {repos.map((r) => <option key={r.id} value={r.id}>{r.full_name}</option>)}
               </select>
               <button
                 onClick={run}
                 disabled={busy || !rid}
-                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-black transition duration-160 hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-full bg-accent px-4 py-2 text-sm font-semibold text-onAccent transition duration-160 hover:bg-accentHover disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {busy ? "Triaging…" : "Run triage"}
               </button>
@@ -83,7 +83,7 @@ export default function Issues() {
         ) : issues.length === 0 ? (
           <Empty title="No open issues" body="GitHub returned no open issues for this repository." />
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+          <div className="overflow-x-auto rounded-[24px] border border-border bg-surface">
             <table className="w-full min-w-[720px] text-left text-sm">
               <thead>
                 <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">

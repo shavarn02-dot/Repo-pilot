@@ -5,8 +5,8 @@ import { ExternalLink, ArrowUpDown } from "lucide-react";
 import { api, Finding, fmtDate, Report, Repo } from "@/lib/api";
 import { CATEGORIES } from "@/lib/snapshot";
 import {
-  AiStatusBadge, Badge, Empty, ErrorBox, Panel, PanelHead, ScoreBar,
-  SevBadge, Skeleton, scoreTextClass,
+  AiStatusBadge, Badge, Empty, ErrorBox, Panel, PanelHead, ScoreBar, ScoreRing,
+  SevBadge, Skeleton,
 } from "@/components/ui";
 
 const SEV_ORDER: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3, info: 4 };
@@ -87,13 +87,10 @@ export default function RepoOverview() {
       {repo.description && <p className="mt-1.5 max-w-2xl text-[15px] text-secondary">{repo.description}</p>}
 
       {/* health */}
-      <div className="mt-7 grid gap-5 lg:grid-cols-[248px_1fr]">
-        <Panel className="p-5">
-          <p className={`tnum font-mono text-[56px] font-semibold leading-none ${scoreTextClass(report.health_score)}`}>
-            {report.health_score.toFixed(1)}
-          </p>
-          <p className="mt-2 text-sm text-secondary">Health score / 100</p>
-          <div className="mt-5 space-y-2 border-t border-border pt-4 text-[13px]">
+      <div className="mt-7 grid gap-5 lg:grid-cols-[264px_1fr]">
+        <Panel className="flex flex-col items-center p-6">
+          <ScoreRing score={report.health_score} scores={report.scores} size={176} />
+          <div className="mt-6 w-full space-y-2 rounded-[20px] bg-elevated/60 px-4 py-4 text-[13px]">
             <p className="flex justify-between">
               <span className="text-muted">Scoring</span>
               <span className="font-mono text-xs">deterministic v{report.scoring_version}</span>
@@ -111,7 +108,7 @@ export default function RepoOverview() {
               <span className="tnum font-mono text-xs">{report.findings.length}</span>
             </p>
           </div>
-          <p className="mt-4 text-xs leading-relaxed text-muted">
+          <p className="mt-4 w-full text-xs leading-relaxed text-muted">
             The score is the weighted sum shown on the right. AI never sets this number.
           </p>
         </Panel>
@@ -151,10 +148,10 @@ export default function RepoOverview() {
                 key={s}
                 onClick={() => setSev(s)}
                 aria-pressed={sev === s}
-                className={`rounded-lg border px-2.5 py-1.5 text-[13px] capitalize transition duration-160 ${
+                className={`rounded-full px-3.5 py-1.5 text-[13px] capitalize transition duration-300 ease-spring ${
                   sev === s
-                    ? "border-accent bg-hover font-medium text-primary"
-                    : "border-border text-secondary hover:bg-hover hover:text-primary"
+                    ? "bg-accentContainer font-semibold text-accent"
+                    : "bg-surface text-secondary hover:bg-elevated hover:text-primary"
                 }`}
               >
                 {s}
@@ -164,7 +161,7 @@ export default function RepoOverview() {
           </div>
           <button
             onClick={() => setSortDesc((v) => !v)}
-            className="flex items-center gap-1.5 rounded-lg border border-border px-2.5 py-1.5 text-[13px] text-secondary transition duration-160 hover:bg-hover hover:text-primary"
+            className="flex items-center gap-1.5 rounded-full bg-surface px-3.5 py-1.5 text-[13px] text-secondary transition duration-300 ease-spring hover:bg-elevated hover:text-primary"
             aria-label="Toggle severity sort order"
           >
             <ArrowUpDown size={13} /> Severity
@@ -173,7 +170,7 @@ export default function RepoOverview() {
       </div>
 
       <div className="mt-4 grid items-start gap-5 lg:grid-cols-[1fr_360px]">
-        <div className="overflow-x-auto rounded-xl border border-border bg-surface">
+        <div className="overflow-x-auto rounded-[24px] border border-border bg-surface">
           <table className="w-full min-w-[560px] text-left text-sm">
             <thead>
               <tr className="border-b border-border text-xs uppercase tracking-wider text-muted">
@@ -219,7 +216,7 @@ export default function RepoOverview() {
 
         {/* inspector */}
         <aside
-          className="rounded-xl border border-border bg-elevated lg:sticky lg:top-[72px]"
+          className="rounded-[24px] border border-border bg-elevated lg:sticky lg:top-[72px]"
           aria-label="Finding inspector"
         >
           {sel ? (

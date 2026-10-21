@@ -2,13 +2,45 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ————— Material Expressive engineering studio — tokens —————
+   Light-first warm paper. Surfaces separate by TONE, not borders.
+   One seed accent: deep indigo, solid fills only. No gradients. */
 :root {
-  --canvas: #0b0d10;
-  --surface: #111418;
-  --elevated: #171b20;
-  --hover: #1e232a;
-  --border: #282e36;
-  --accent: #a78bfa;
+  --c-paper: 250 249 246;          /* #FAF9F6 */
+  --c-surface: 240 238 233;        /* #F0EEE9 */
+  --c-elevated: 231 229 223;       /* #E7E5DF */
+  --c-hover: 233 230 221;
+  --c-ink: 25 28 30;               /* #191C1E */
+  --c-ink-2: 71 74 79;
+  --c-ink-3: 116 119 124;
+  --c-border: 226 224 216;
+  --c-accent: 59 79 216;           /* #3B4FD8 */
+  --c-accent-hover: 47 63 187;
+  --c-accent-container: 224 228 255; /* #E0E4FF */
+  --c-on-accent: 255 255 255;
+  --c-success: 27 122 67;          /* #1B7A43 */
+  --c-warning: 178 94 9;           /* #B25E09 */
+  --c-danger: 179 38 30;           /* #B3261E */
+  --c-info: 82 96 109;             /* slate */
+}
+
+.dark {
+  --c-paper: 18 20 23;             /* #121417 */
+  --c-surface: 27 30 36;
+  --c-elevated: 36 40 48;
+  --c-hover: 42 46 56;
+  --c-ink: 233 235 239;
+  --c-ink-2: 171 176 184;
+  --c-ink-3: 130 136 146;
+  --c-border: 47 52 61;
+  --c-accent: 139 155 255;         /* lifted indigo */
+  --c-accent-hover: 165 179 255;
+  --c-accent-container: 37 45 92;
+  --c-on-accent: 10 14 40;
+  --c-success: 84 201 134;
+  --c-warning: 234 170 94;
+  --c-danger: 243 140 131;
+  --c-info: 150 165 180;
 }
 
 html {
@@ -16,15 +48,16 @@ html {
 }
 
 body {
-  background: var(--canvas);
-  color: #e9edf2;
+  background: rgb(var(--c-paper));
+  color: rgb(var(--c-ink));
   font-feature-settings: "ss01", "cv11";
   text-rendering: optimizeLegibility;
+  transition: background-color 300ms cubic-bezier(0.2, 0, 0, 1), color 300ms cubic-bezier(0.2, 0, 0, 1);
 }
 
 ::selection {
-  background: rgba(167, 139, 250, 0.32);
-  color: #e9edf2;
+  background: rgb(var(--c-accent-container));
+  color: rgb(var(--c-ink));
 }
 
 /* Tabular numerals everywhere numbers are compared */
@@ -34,87 +67,99 @@ body {
 
 /* Visible, consistent focus */
 :focus-visible {
-  outline: 2px solid #a78bfa;
+  outline: 2px solid rgb(var(--c-accent));
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 /* Refined scrollbars for code / tables */
 .scroll-slim {
   scrollbar-width: thin;
-  scrollbar-color: #282e36 transparent;
+  scrollbar-color: rgb(var(--c-border)) transparent;
 }
 .scroll-slim::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 .scroll-slim::-webkit-scrollbar-thumb {
-  background: #282e36;
-  border-radius: 8px;
+  background: rgb(var(--c-border));
+  border-radius: 999px;
 }
 .scroll-slim::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* Skeleton shimmer — transform/opacity only, disabled for reduced motion */
+/* Skeleton shimmer — transform/opacity only */
 @keyframes rp-shimmer {
-  0% { opacity: 0.55; }
-  50% { opacity: 1; }
-  100% { opacity: 0.55; }
+  0% { opacity: 0.5; }
+  50% { opacity: 0.95; }
+  100% { opacity: 0.5; }
 }
 .skeleton-pulse {
   animation: rp-shimmer 1.6s ease-in-out infinite;
 }
 
 @keyframes rp-rise {
-  from { opacity: 0; transform: translateY(6px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 .rise {
-  animation: rp-rise 240ms ease-out both;
+  animation: rp-rise 340ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 @keyframes rp-blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
+  50% { opacity: 0.3; }
 }
 .stage-dot-active {
   animation: rp-blink 1.1s ease-in-out infinite;
 }
 
-/* Range input (before/after slider) */
+/* Score ring: animated arc sweep on mount / score change */
+.score-arc {
+  transition: stroke-dashoffset 1100ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.score-seg {
+  transition: opacity 600ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Range input (before/after slider) — pill thumb, indigo track fill */
 input[type="range"].rp-range {
   -webkit-appearance: none;
   appearance: none;
-  height: 4px;
-  border-radius: 4px;
-  background: #282e36;
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(var(--c-elevated));
 }
 input[type="range"].rp-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
-  background: #e9edf2;
-  border: 2px solid #0b0d10;
-  box-shadow: 0 0 0 1px #282e36;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 1px 3px rgb(25 28 30 / 0.25), 0 6px 16px -4px rgb(25 28 30 / 0.3);
   cursor: ew-resize;
 }
 input[type="range"].rp-range::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
-  background: #e9edf2;
-  border: 2px solid #0b0d10;
+  background: #ffffff;
+  border: none;
+  box-shadow: 0 1px 3px rgb(25 28 30 / 0.25), 0 6px 16px -4px rgb(25 28 30 / 0.3);
   cursor: ew-resize;
 }
 
-/* Accent checkbox */
+/* Pill checkbox in the seed accent */
 input[type="checkbox"].rp-check {
-  accent-color: #a78bfa;
-  width: 16px;
-  height: 16px;
+  accent-color: #3b4fd8;
+  width: 18px;
+  height: 18px;
+}
+.dark input[type="checkbox"].rp-check {
+  accent-color: #8b9bff;
 }
 
 @media (prefers-reduced-motion: reduce) {

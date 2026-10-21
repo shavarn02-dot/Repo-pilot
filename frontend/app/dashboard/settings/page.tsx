@@ -75,7 +75,7 @@ export default function Settings() {
                 </div>
               </dl>
             ) : (
-              <div className="skeleton-pulse h-20 rounded-lg bg-elevated" role="status" aria-label="Checking backend status" />
+              <div className="skeleton-pulse h-20 rounded-2xl bg-elevated" role="status" aria-label="Checking backend status" />
             )}
           </div>
         </Panel>
