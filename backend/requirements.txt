@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pydantic>=2
+sqlalchemy>=2
+httpx
+python-multipart
+pillow
+pytest
+psycopg[binary]

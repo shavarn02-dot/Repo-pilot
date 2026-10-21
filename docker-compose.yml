@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment: { POSTGRES_USER: repopilot, POSTGRES_PASSWORD: repopilot, POSTGRES_DB: repopilot }
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql+psycopg://repopilot:repopilot@db:5432/repopilot
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      VISUAL_STORAGE_DIR: /data/visual
+    ports: ["8000:8000"]
+    volumes: [visualdata:/data/visual]
+    depends_on: [db]
+  frontend:
+    build: ./frontend
+    environment: { NEXT_PUBLIC_API_URL: http://localhost:8000 }
+    ports: ["3000:3000"]
+    depends_on: [backend]
+volumes: { pgdata: {}, visualdata: {} }
